@@ -1,8 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  KeyboardAvoidingView,
+  TouchableOpacity
+} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import Colors from './../Color';
-import tempData from './../tempData';
 
 export default class AddListModal extends React.Component {
 
@@ -15,11 +21,9 @@ export default class AddListModal extends React.Component {
 
   createTodo = () => {
     const { name, color } = this.state;
-    tempData.push({
-      name,
-      color,
-      todos: []
-    });
+
+    const list = { name, color };
+    this.props.addList(list);
 
     this.setState({ name: '' });
     this.props.closeModal();
@@ -57,8 +61,8 @@ export default class AddListModal extends React.Component {
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 15 }}>
             {this.renderColors()}
           </View>
-          <TouchableOpacity 
-            style={[styles.create, { backgroundColor: this.state.color }]} 
+          <TouchableOpacity
+            style={[styles.create, { backgroundColor: this.state.color }]}
             onPress={this.createTodo}
           >
             <Text style={{ color: Colors.white, fontWeight: '600' }}>Create!</Text>
