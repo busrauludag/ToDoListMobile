@@ -1,4 +1,4 @@
-export default tempData = [
+const tempData = [
   {
     id: 1,
     name: 'Plan a Trip',
@@ -69,3 +69,5 @@ export default tempData = [
     ]
   }
 ];
+
+export default tempData;
