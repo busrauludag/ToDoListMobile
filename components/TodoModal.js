@@ -8,9 +8,11 @@ import {
   FlatList,
   KeyboardAvoidingView,
   TextInput,
-  Keyboard
+  Keyboard,
+  Animated
 } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { Swipeable } from 'react-native-gesture-handler';
 
 import Colors from './../Color';
 
