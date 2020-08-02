@@ -30,10 +30,20 @@ export default class TodoModal extends React.Component {
 
   addTodo = () => {
     let list = this.props.list;
-    list.todos.push({ title: this.state.newTodo, completed: false });
-    this.props.updateList(list);
+
+    if (!list.todos.some(todo => todo.title === this.state.newTodo)) {
+      list.todos.push({ title: this.state.newTodo, completed: false });
+      this.props.updateList(list);
+    }
+    
     this.setState({ newTodo: '' });
     Keyboard.dismiss();
+  }
+
+  deleteTodo = index => {
+    let list = this.props.list;
+    list.todos.splice(index, 1);
+    this.props.updateList(list);
   }
 
   renderTodo = (todo, index) => {
@@ -78,7 +88,7 @@ export default class TodoModal extends React.Component {
     });
 
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => this.deleteTodo(index)}>
         <Animated.View style={[styles.deleteButton, { opacity: opacity }]}>
           <Animated.Text
             style={{ color: Colors.white, fontWeight: '800', transform: [{ scale }] }}>
@@ -120,7 +130,7 @@ export default class TodoModal extends React.Component {
             <FlatList
               data={list.todos}
               renderItem={({ item, index }) => this.renderTodo(item, index)}
-              keyExtractor={(_, index) => index.toString()}
+              keyExtractor={item => item.title}
               showsVerticalScrollIndicator={false}
             />
           </View>
