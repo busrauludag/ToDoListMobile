@@ -24,8 +24,6 @@ export default class App extends React.Component {
     loading: true
   }
 
-  // user uid: FKt9QA5od4RyYRJ4pzEJIRZEkRw1
-
   componentDidMount() {
     firebase = new Fire((error, user) => {
       if (error) {
@@ -89,7 +87,8 @@ export default class App extends React.Component {
         <View style={{ flexDirection: 'row' }}>
           <View style={styles.divider} />
           <Text style={styles.title}>
-            Todo <Text style={{ fontWeight: '300', color: Colors.blue }}>Lists</Text>
+            <Text>Todo </Text>
+            <Text style={{ fontWeight: '300', color: Colors.blue }}>Lists</Text>
           </Text>
           <View style={styles.divider} />
         </View>
