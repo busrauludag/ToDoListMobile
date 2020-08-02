@@ -14,9 +14,12 @@ import {
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 
+import { switchTheme } from './../redux/themeActions';
+import { connect } from 'react-redux';
+
 import Colors from './../Color';
 
-export default class TodoModal extends React.Component {
+class TodoModal extends React.Component {
 
   state = {
     newTodo: ''
@@ -35,7 +38,7 @@ export default class TodoModal extends React.Component {
       list.todos.push({ title: this.state.newTodo, completed: false });
       this.props.updateList(list);
     }
-    
+
     this.setState({ newTodo: '' });
     Keyboard.dismiss();
   }
@@ -47,9 +50,11 @@ export default class TodoModal extends React.Component {
   }
 
   renderTodo = (todo, index) => {
+    const { theme } = this.props.theme;
+
     return (
       <Swipeable renderRightActions={(_, dragX) => this.rightActions(dragX, index)}>
-        <View style={styles.todoContainer}>
+        <View style={[styles.todoContainer]}>
           <TouchableOpacity onPress={() => this.toggleTodoCompleted(index)}>
             <Ionicons
               name={todo.completed ? 'ios-square' : 'ios-square-outline'}
@@ -63,7 +68,7 @@ export default class TodoModal extends React.Component {
               styles.todo,
               {
                 textDecorationLine: todo.completed ? 'line-through' : 'none',
-                color: todo.completed ? Colors.gray : Colors.black
+                color: todo.completed ? Colors.gray : (this.props.theme.mode === 'light' ? Colors.darkBlack : Colors.white),
               }
             ]}
           >
@@ -100,24 +105,28 @@ export default class TodoModal extends React.Component {
   };
 
   render() {
-
     const list = this.props.list;
     const taskCount = list.todos.length;
     const completedCount = list.todos.filter(todo => todo.completed).length;
 
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView
+          style={[
+            styles.container,
+            { backgroundColor: this.props.theme.mode === 'light' ? Colors.white : Colors.darkBlack }
+          ]}
+        >
           <TouchableOpacity
             style={{ position: 'absolute', top: 64, right: 32, zIndex: 10 }}
             onPress={this.props.closeModal}
           >
-            <AntDesign name='close' size={24} color={Colors.black} />
+            <AntDesign name='close' size={24} color={this.props.theme.mode === 'light' ? Colors.darkBlack : Colors.white} />
           </TouchableOpacity>
 
           <View style={[styles.section, styles.header, { borderBottomColor: list.color }]}>
             <View>
-              <Text style={styles.title}>
+              <Text style={[styles.title, { color: this.props.theme.mode === 'light' ? Colors.darkBlack : Colors.white }]}>
                 {list.name}
               </Text>
               <Text style={styles.taskCount}>
@@ -137,7 +146,7 @@ export default class TodoModal extends React.Component {
 
           <View style={[styles.section, styles.footer]}>
             <TextInput
-              style={[styles.input, { borderColor: list.color }]}
+              style={[styles.input, { borderColor: list.color, color: this.props.theme.mode === 'light' ? Colors.darkBlack : Colors.white }]}
               onChangeText={text => this.setState({ newTodo: text })}
               value={this.state.newTodo}
             />
@@ -154,6 +163,12 @@ export default class TodoModal extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  theme: state.themeReducer.theme,
+});
+
+export default connect(mapStateToProps, { switchTheme })(TodoModal);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -161,7 +176,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   section: {
-    // flex: 1,
     alignSelf: 'stretch',
   },
   header: {
@@ -190,7 +204,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 48,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: 2,
     borderRadius: 6,
     marginRight: 8,
     paddingHorizontal: 8,

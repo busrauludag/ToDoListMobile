@@ -7,10 +7,13 @@ import {
   Modal 
 } from 'react-native';
 
+import { switchTheme } from './../redux/themeActions';
+import { connect } from 'react-redux';
+
 import Colors from './../Color';
 import TodoModal from './TodoModal';
 
-export default class TodoList extends React.Component {
+class TodoList extends React.Component {
 
   state = {
     showListVisible: false
@@ -21,7 +24,6 @@ export default class TodoList extends React.Component {
   }
 
   render() {
-
     const list = this.props.list;
     const completedCount = list.todos.filter(todo => todo.completed).length;
     const remainingCount = list.todos.length - completedCount;
@@ -64,6 +66,12 @@ export default class TodoList extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => ({
+  theme: state.themeReducer.theme,
+});
+
+export default connect(mapStateToProps, { switchTheme })(TodoList);
 
 const styles = StyleSheet.create({
   listContainer: {
